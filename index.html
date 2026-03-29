@@ -164,7 +164,7 @@
   </div>
 
   <!-- ══ PANEL 2 : IDENTITÉ + CONTACT 1 + EMAIL + COURS ════════ -->
-  <div class="panel" id="p2">
+  <div class="panel active" id="p2">
     <div class="fields">
 
       <!-- Identité -->
@@ -212,11 +212,10 @@
       <div class="sec-label">Contact — Personnel ou Représentant légal — Obligatoire</div>
       <div class="field">
         <label class="flabel">Qualité <span class="req">*</span></label>
-        <p class="fdesc">Parents ; Époux/Épouse ; Concubin/Concubine ; Grand-parent</p>
+        <p class="fdesc">Personnel ; Parents ; Époux/Épouse ; etc... </p>
         <select class="finput" id="f-qualite1">
-          <option value="">— Choisissez —</option>
-          <option>Mère</option><option>Père</option><option>Époux/Épouse</option>
-          <option>Concubin/Concubine</option><option>Grand-parent</option><option>Personnel</option>
+          <option value="">— Choisissez —</option><option>Personnel</option><option>Mère</option><option>Père</option><option>Époux/Épouse</option>
+          <option>Concubin/Concubine</option><option>Grand-parent</option>
         </select>
         <div class="ferr" id="f-qualite1-e">Veuillez sélectionner une qualité</div>
       </div>
@@ -249,7 +248,7 @@
   </div>
 
   <!-- ══ PANEL 3 : MÉDICAL ════════════════════════════════════ -->
-  <div class="panel" id="p3">
+  <div class="panel active" id="p3">
     <div class="alert a-warning">
       Le certificat médical n'est plus obligatoire. Vous pouvez répondre à un questionnaire de santé.<br>
       • Réponse <strong>Oui</strong> à toutes les questions → transmettre l'attestation.<br>
@@ -276,7 +275,7 @@
   </div>
 
   <!-- ══ PANEL 4 : CONTACTS 2 & 3 ════════════════════════════ -->
-  <div class="panel" id="p4">
+  <div class="panel active" id="p4">
     <div class="fields">
 
       <div class="sec-label">Contact — d'urgence ou Deuxième parent <span style="font-weight:400;font-size:.78rem;text-transform:none;color:var(--muted)">(Recommandé)</span></div>
@@ -284,6 +283,7 @@
 
       <div class="field">
         <label class="flabel">Qualité</label>
+		<p class="fdesc">Parents ; Époux/Épouse ; etc... </p>
         <select class="finput" id="f-qualite2">
           <option value="">— Recommandé —</option>
           <option>Mère</option><option>Père</option><option>Époux/Épouse</option>
@@ -673,8 +673,8 @@ async function submit() {
     autorisationTransport:rVal('atr'),
     autorisationPhoto:    rVal('aph'),
     autorisationUrgence:  rVal('aur'),
-    autorisationQuitter:  rVal('aqu'),
-    autorisationConfier:  val('confier'),
+    autorisationQuitter: ge('field-quitter').style.display === 'none' ? 'Pas concerné' : rVal('aqu'),
+    autorisationConfier: ge('field-confier').style.display === 'none' ? '' : val('confier'),
     validationInfos:      cbV('f-validation') ? 'Je certifie que toutes les informations sont exactes' : '',
     timestamp:            new Date().toLocaleString('fr-FR'),
   };
