@@ -620,7 +620,7 @@ function goTo(n) {
   var fieldC = ge('field-confier');
   if(majeur) {
     fieldC.style.display = 'none';
-    ge('f-confier').value = '';
+    ge('f-confier').value = 'Pas Concerné';
   } else {
     fieldC.style.display = '';
     ge('f-confier').value = '';
@@ -674,7 +674,7 @@ async function submit() {
     autorisationPhoto:    rVal('aph'),
     autorisationUrgence:  rVal('aur'),
     autorisationQuitter: ge('field-quitter').style.display === 'none' ? 'Pas concerné' : rVal('aqu'),
-    autorisationConfier: ge('field-confier').style.display === 'none' ? '' : val('confier'),
+    autorisationConfier: ge('field-confier').style.display === 'none' ? 'Pas concerné' : val('confier'),
     validationInfos:      cbV('f-validation') ? 'Je certifie que toutes les informations sont exactes' : '',
     timestamp:            new Date().toLocaleString('fr-FR'),
   };
