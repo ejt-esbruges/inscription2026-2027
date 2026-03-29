@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Dossier d'adhésion EJT Bruges 2026-2027</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:   #0b1f47;
+      --navy2:  #132a5e;
+      --red:    #cc2418;
+      --red-bg: #fdf2f2;
+      --bg:     #edf0f5;
+      --border: #dde3ee;
+      --muted:  #64748b;
+      --text:   #0f172a;
+      --ok:     #16a34a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100dvh; }
+
+    #offline-bar { position:fixed;top:0;left:0;right:0;z-index:200;background:var(--red);color:#fff;text-align:center;padding:.5rem 1rem;font-size:.8rem;font-weight:600;transform:translateY(-100%);transition:transform .3s; }
+    #offline-bar.show { transform:translateY(0); }
+
+    .app-header { position:sticky;top:0;z-index:100;background:var(--navy);box-shadow:0 2px 12px rgba(0,0,0,.35); }
+    .header-inner { display:flex;align-items:center;gap:.75rem;padding:.85rem 1.25rem; }
+    .header-logo { font-size:1.6rem;flex-shrink:0; }
+    .club-name { font-family:'DM Sans',sans-serif;font-size:2rem;font-weight:600;letter-spacing:.06em;color:#fff;text-transform:uppercase; line-height:1.1;}
+    .form-sub { font-size:.72rem;color:rgba(255,255,255,.6); }
+    .progress-meta { display:flex;justify-content:space-between;font-size:.7rem;color:rgba(255,255,255,.65);margin-bottom:.4rem; }
+    .progress-track { height:5px;background:rgba(255,255,255,.18);border-radius:3px; }
+    .progress-fill { height:100%;background:var(--red);border-radius:3px;transition:width .45s cubic-bezier(.4,0,.2,1); }
+
+    .page-wrap { max-width:min(900px, 95%);margin:0 auto;padding:1.1rem .9rem 5rem; }
+    .card { background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.07),0 6px 24px rgba(0,0,0,.07);overflow:hidden; }
+
+    .step-hd { background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);border-left:5px solid var(--red);padding:1.1rem 1.4rem;color:#fff; }
+    .hd-icon { margin-right:.4rem; }
+    .hd-title { font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:400;letter-spacing:.02em; }
+    .hd-sub { font-size:.72rem;color:rgba(255,255,255,.6);margin-top:1px; }
+
+    .panel { display:none; }
+    .panel.active { display:block;animation:slideIn .3s cubic-bezier(.4,0,.2,1); }
+    @keyframes slideIn { from{opacity:0;transform:translateX(14px)} to{opacity:1;transform:translateX(0)} }
+
+    .alert { margin:.9rem 1.3rem 0;padding:.7rem .95rem;border-radius:8px;font-size:.8rem;line-height:1.55; }
+    .a-info    { background:#eff6ff;border-left:3px solid #3b82f6;color:#1e40af; }
+    .a-warning { background:#fffbeb;border-left:3px solid #f59e0b;color:#7c4a00; }
+    .a-danger  { background:var(--red-bg);border-left:3px solid var(--red);color:#9b1c1c; }
+
+    .fields { padding:1.1rem 1.3rem; }
+    .field { margin-bottom:1.05rem; }
+    .field:last-child { margin-bottom:0; }
+    .flabel { display:block;font-size:.71rem;font-weight:600;letter-spacing:.055em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem; }
+    .req { color:var(--red); }
+    .fdesc { font-size:.76rem;color:var(--muted);margin-bottom:.35rem;line-height:1.45; }
+
+    .finput { width:100%;padding:.68rem .9rem;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.93rem;color:var(--text);background:#f8fafc;outline:none;transition:border-color .18s,box-shadow .18s,background .18s;-webkit-appearance:none; }
+    .finput::placeholder { color:#b0bac9; }
+    .finput:focus { border-color:var(--navy);background:#fff;box-shadow:0 0 0 3px rgba(11,31,71,.1); }
+    .finput.err { border-color:var(--red);box-shadow:0 0 0 3px rgba(204,36,24,.1); }
+    .finput.ok  { border-color:var(--ok); }
+    textarea.finput { resize:vertical;min-height:72px; }
+    select.finput { cursor:pointer; }
+
+    .ferr { display:none;font-size:.73rem;font-weight:500;color:var(--red);margin-top:.28rem; }
+    .ferr.show { display:block; }
+
+    .grid2 { display:grid;grid-template-columns:1fr 1.7fr;gap:.75rem; }
+    @media(max-width:380px){ .grid2{grid-template-columns:1fr;} }
+
+    .choices { display:flex;flex-direction:column;gap:.4rem; }
+    .choice { display:flex;align-items:flex-start;gap:.7rem;padding:.65rem .9rem;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;background:#f8fafc;transition:border-color .15s,background .15s;user-select:none; }
+    .choice:hover { border-color:var(--navy);background:#f0f4fb; }
+    .choice.selected { border-color:var(--navy);background:#eef2fb; }
+    .choice input { display:none; }
+
+    .cdot { flex-shrink:0;margin-top:2px;width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .15s; }
+    .choice.selected .cdot { background:var(--navy);border-color:var(--navy); }
+    .choice.selected .cdot::after { content:'';width:6px;height:6px;background:#fff;border-radius:50%; }
+
+    .csq { flex-shrink:0;margin-top:2px;width:18px;height:18px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all .15s; }
+    .choice.selected .csq { background:var(--navy);border-color:var(--navy); }
+    .choice.selected .csq::after { content:'✓';color:#fff;font-size:11px;font-weight:700; }
+
+    .ctext { font-size:.86rem;line-height:1.4;color:var(--text); }
+
+    .divider { border:none;border-top:1px solid var(--border);margin:1.1rem 0; }
+    .sec-label { font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);margin-bottom:.55rem; }
+    .sec-sub { font-size:.76rem;color:var(--muted);margin-bottom:.7rem;line-height:1.5; }
+
+    .nav-bar { display:flex;gap:.7rem;padding:.9rem 1.3rem;border-top:1px solid var(--border); }
+    .btn { display:flex;align-items:center;justify-content:center;gap:.45rem;padding:.78rem 1rem;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;border:none;cursor:pointer;transition:all .18s; }
+    .btn-p { flex:1;background:var(--navy);color:#fff; }
+    .btn-p:hover:not(:disabled) { background:var(--navy2);transform:translateY(-1px);box-shadow:0 4px 14px rgba(11,31,71,.25); }
+    .btn-p:active:not(:disabled) { transform:translateY(0); }
+    .btn-p:disabled { opacity:.6;cursor:not-allowed;transform:none; }
+    .btn-s { flex:.55;background:#fff;color:var(--muted);border:1.5px solid var(--border); }
+    .btn-s:hover { border-color:var(--navy);color:var(--navy); }
+    .spinner { width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none; }
+    .btn-p.loading .spinner { display:block; }
+    .btn-p.loading .blabel { opacity:.7; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    .err-global { display:none;margin:0 1.3rem .8rem;padding:.65rem .9rem;background:var(--red-bg);border:1px solid rgba(204,36,24,.25);border-radius:8px;font-size:.8rem;font-weight:500;color:#9b1c1c; }
+    .err-global.show { display:block; }
+
+    .success-screen { display:none;text-align:center;padding:2.5rem 1.5rem 2rem; }
+    .success-screen.show { display:block;animation:slideIn .4s ease; }
+    .success-icon { width:76px;height:76px;border-radius:50%;background:var(--navy);margin:0 auto 1.3rem;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 8px 24px rgba(11,31,71,.3); }
+    .success-title { font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);margin-bottom:.4rem; }
+    .success-msg { font-size:.87rem;color:var(--muted);line-height:1.65;max-width:340px;margin:0 auto 1.2rem; }
+  </style>
+</head>
+<body>
+
+<div id="offline-bar">⚡ Connexion internet perdue — vérifiez votre réseau</div>
+
+<header class="app-header">
+  <div class="header-inner">
+    <img src="logo_EJT_cercle_2024.png" style="height:50px;width:auto;" />
+    <div style="flex:1;min-width:0;">
+      <div class="club-name">EJT Bruges</div>
+      <div class="form-sub">Dossier d'adhésion — Saison 2026-2027</div>
+    </div>
+    <div style="flex:2;min-width:0;padding-left:1.5rem;">
+      <div class="progress-meta" style="margin-bottom:.4rem;">
+        <span id="prog-label">Étape 1 sur 9</span>
+        <span id="prog-pct">11%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="prog-fill" style="width:11%"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap"><div class="card">
+
+  <div class="step-hd" id="step-hd">
+  <div class="hd-title" id="hd-title">⚠️ Important — À lire avant de commencer ⚠️</div>
+  <div class="hd-sub" id="hd-sub">Section 1 — Informations importantes</div>
+</div>
+
+  <!-- ══ PANEL 1 : IMPORTANT DEBUT ════════════════════════════ -->
+  <div class="panel active" id="p1">
+    <div class="alert a-info">
+      Ceci est le formulaire d'adhésion au club. Merci de lire attentivement toutes les questions.<br>
+      <strong>Il est OBLIGATOIRE de le renseigner pour pouvoir pratiquer.</strong>
+    </div>
+    <div class="fields" style="padding-top:.75rem">
+      <ul style="font-size:.83rem;line-height:1.75;padding-left:1.2rem">
+        <li><strong>• Aucun mineur ne pourra adhérer sans autorisation parentale.</strong></li>
+        <li style="margin-top:.2rem">L'adhésion à l'Entente Sportive de Bruges (ESB) ne sera effective qu'après présentation du dossier d'adhésion complet, c'est à dire :</li>
+        <li style="margin-left:1rem">• Avoir fourni une attestation de santé ou un certificat médical de non contre-indication à la pratique du judo (avec, le cas échéant, la mention "en compétition").</li>
+        <li style="margin-left:1rem">• Avoir validé le règlement intérieur.</li>
+        <li style="margin-left:1rem">• Avoir réglé la licence et la cotisation pour la saison en cours.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 2 : IDENTITÉ + CONTACT 1 + EMAIL + COURS ════════ -->
+  <div class="panel" id="p2">
+    <div class="fields">
+
+      <!-- Identité -->
+      <div class="sec-label">Identité du licencié</div>
+
+      <div class="field">
+        <label class="flabel" for="f-nom">NOM <span class="req">*</span></label>
+        <p class="fdesc">du judoka</p>
+        <input class="finput" type="text" id="f-nom" placeholder="DUPONT" autocomplete="family-name"/>
+        <div class="ferr" id="f-nom-e">Ce champ est obligatoire</div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-prenom">Prénom <span class="req">*</span></label>
+        <p class="fdesc">du judoka</p>
+        <input class="finput" type="text" id="f-prenom" placeholder="Marie" autocomplete="given-name"/>
+        <div class="ferr" id="f-prenom-e">Ce champ est obligatoire</div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-ddn">Date de naissance <span class="req">*</span></label>
+        <p class="fdesc">Format : JJ/MM/AAAA</p>
+        <input class="finput" type="text" id="f-ddn" placeholder="15/06/1990" inputmode="numeric" maxlength="10"/>
+        <div class="ferr" id="f-ddn-e">Veuillez entrer une date valide au format JJ/MM/AAAA</div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-adresse">Adresse postale <span class="req">*</span></label>
+        <input class="finput" type="text" id="f-adresse" placeholder="12 rue de la Paix" autocomplete="street-address"/>
+        <div class="ferr" id="f-adresse-e">Ce champ est obligatoire</div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label class="flabel" for="f-cp">Code postal <span class="req">*</span></label>
+          <input class="finput" type="text" id="f-cp" placeholder="33520" inputmode="numeric" maxlength="5"/>
+          <div class="ferr" id="f-cp-e">Obligatoire</div>
+        </div>
+        <div class="field">
+          <label class="flabel" for="f-ville">Ville <span class="req">*</span></label>
+          <input class="finput" type="text" id="f-ville" placeholder="Bruges" autocomplete="address-level2"/>
+          <div class="ferr" id="f-ville-e">Obligatoire</div>
+        </div>
+      </div>
+
+      <hr class="divider"/>
+
+      <!-- Contact 1 -->
+      <div class="sec-label">Contact — Personnel ou Représentant légal — Obligatoire</div>
+      <div class="field">
+        <label class="flabel">Qualité <span class="req">*</span></label>
+        <p class="fdesc">Parents ; Époux/Épouse ; Concubin/Concubine ; Grand-parent</p>
+        <select class="finput" id="f-qualite1">
+          <option value="">— Choisissez —</option>
+          <option>Mère</option><option>Père</option><option>Époux/Épouse</option>
+          <option>Concubin/Concubine</option><option>Grand-parent</option><option>Personnel</option>
+        </select>
+        <div class="ferr" id="f-qualite1-e">Veuillez sélectionner une qualité</div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-tel1">Numéro de téléphone <span class="req">*</span></label>
+        <p class="fdesc">N'écrire qu'un seul numéro de téléphone !</p>
+        <input class="finput" type="tel" id="f-tel1" placeholder="06 12 34 56 78" autocomplete="tel"/>
+        <div class="ferr" id="f-tel1-e">Ce champ est obligatoire</div>
+      </div>
+
+      <hr class="divider"/>
+
+      <!-- Email + Cours -->
+      <div class="field">
+        <label class="flabel" for="f-email">Adresse e-mail <span class="req">*</span></label>
+        <p class="fdesc">Cette adresse recevra les informations du club et sera utilisée comme adresse mail du contact 1.</p>
+        <input class="finput" type="email" id="f-email" placeholder="prenom.nom@exemple.fr" autocomplete="email" inputmode="email"/>
+        <div class="ferr" id="f-email-e">Veuillez entrer une adresse e-mail valide</div>
+      </div>
+      <!-- Champ miroir caché pour compatibilité script -->
+      <input type="hidden" id="f-mail1d"/>
+
+      <div class="field">
+        <label class="flabel">Cours du licencié <span class="req">*</span></label>
+        <div class="choices" id="cours-g"></div>
+        <div class="ferr" id="cours-e">Veuillez sélectionner un cours</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ PANEL 3 : MÉDICAL ════════════════════════════════════ -->
+  <div class="panel" id="p3">
+    <div class="alert a-warning">
+      Le certificat médical n'est plus obligatoire. Vous pouvez répondre à un questionnaire de santé.<br>
+      • Réponse <strong>Oui</strong> à toutes les questions → transmettre l'attestation.<br>
+      • Réponse <strong>Non</strong> à une question → fournir un certificat médical <em>"apte à la pratique [discipline]"</em>.
+    </div>
+    <div class="fields">
+      <div class="field">
+        <label class="flabel">Certificat médical <span class="req">*</span></label>
+        <p class="fdesc">⚠️ Le choix "Non Pratiquant" est réservé aux membres du bureau qui ne font ni judo ni jujitsu</p>
+        <div class="choices" id="cert-g"></div>
+        <div class="ferr" id="cert-e">Veuillez faire un choix</div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-allergie">Allergie(s) ?</label>
+        <p class="fdesc">Cette réponse n'est pas obligatoire</p>
+        <input class="finput" type="text" id="f-allergie" placeholder="Aucune / pénicilline, arachides..."/>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-traitement">Traitement médical ? (Médicaments, Asthme…)</label>
+        <p class="fdesc">Cette réponse n'est pas obligatoire</p>
+        <input class="finput" type="text" id="f-traitement" placeholder="Aucun / Ventoline..."/>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 4 : CONTACTS 2 & 3 ════════════════════════════ -->
+  <div class="panel" id="p4">
+    <div class="fields">
+
+      <div class="sec-label">Contact — d'urgence ou Deuxième parent <span style="font-weight:400;font-size:.78rem;text-transform:none;color:var(--muted)">(Recommandé)</span></div>
+      <p class="sec-sub">‼️ <strong>Majeurs</strong> : notez ici la personne à contacter en cas d'urgence.</p>
+
+      <div class="field">
+        <label class="flabel">Qualité</label>
+        <select class="finput" id="f-qualite2">
+          <option value="">— Recommandé —</option>
+          <option>Mère</option><option>Père</option><option>Époux/Épouse</option>
+          <option>Concubin/Concubine</option><option>Grand-parent</option><option>Enfant</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-tel2">Numéro de téléphone </label>
+        <p class="fdesc">N'écrire qu'un seul numéro de téléphone !</p>
+        <input class="finput" type="tel" id="f-tel2" placeholder="06 12 34 56 78"/>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-mail2">Adresse mail</label>
+		<p class="fdesc">⚠️ Toute adresse mail renseignée ici recevra les informations du club</p>
+        <input class="finput" type="email" id="f-mail2" placeholder="contact@exemple.fr" inputmode="email"/>
+        <div class="ferr" id="f-mail2-e">Veuillez entrer une adresse e-mail valide</div>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="sec-label">Contact <span style="font-weight:400;font-size:.78rem;text-transform:none;color:var(--muted)">(facultatif)</span></div>
+      <div class="field">
+        <label class="flabel">Qualité 3</label>
+        <select class="finput" id="f-qualite3">
+          <option value="">— Optionnel —</option>
+          <option>Mère</option><option>Père</option><option>Époux/Épouse</option>
+          <option>Concubin/Concubine</option><option>Grand-parent</option><option>Enfant</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-tel3">Numéro de téléphone 3</label>
+        <p class="fdesc">N'écrire qu'un seul numéro de téléphone !</p>
+        <input class="finput" type="tel" id="f-tel3" placeholder="Optionnel"/>
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-mail3">Adresse mail 3</label><p class="fdesc">⚠️ Toute adresse mail renseignée ici recevra les informations du club</p>
+        <input class="finput" type="email" id="f-mail3" placeholder="Optionnel" inputmode="email"/>
+        <div class="ferr" id="f-mail3-e">Format d'e-mail invalide</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ PANEL 5 : AUTORISATIONS ══════════════════════════════ -->
+  <div class="panel" id="p5">
+    <div class="fields">
+      <div class="field">
+        <label class="flabel">J'autorise l'encadrement à transporter l'adhérent sur les lieux des manifestations (compétitions, sorties, etc…) <span class="req">*</span></label>
+        <div class="choices" id="atr-g"></div>
+        <div class="ferr" id="atr-e">Veuillez répondre à cette question</div>
+      </div>
+      <div class="field">
+        <label class="flabel">J'autorise l'ESB et l'EJT à utiliser les photos de l'adhérent pour la communication ou le bulletin d'information de la section ou de l'ESB (dont magazine Info Sports) <span class="req">*</span></label>
+        <div class="choices" id="aph-g"></div>
+        <div class="ferr" id="aph-e">Veuillez répondre à cette question</div>
+      </div>
+      <div class="field">
+        <label class="flabel">J'autorise l'encadrement, en cas de maladie ou d'accident, à prendre toutes les mesures d'urgence, y compris l'hospitalisation <span class="req">*</span></label>
+        <div class="choices" id="aur-g"></div>
+        <div class="ferr" id="aur-e">Veuillez répondre à cette question</div>
+      </div>
+      <div class="field" id="field-quitter">
+        <label class="flabel">J'autorise mon enfant à quitter seul le lieu de son activité <span class="req">*</span></label>
+        <p class="fdesc">Sans cette autorisation, aucun enfant mineur ne pourra quitter seul le lieu de son activité. Passé un délai raisonnable, l'enfant sera confié à la police municipale.</p>
+        <div class="choices" id="aqu-g"></div>
+        <div class="ferr" id="aqu-e">Veuillez répondre à cette question</div>
+      </div>
+      <div class="field" id="field-confier">
+       <label class="flabel" for="f-confier">J'autorise les responsables de la section à confier mon enfant aux personnes désignées ci-après</label>
+       <p class="fdesc">Prénom NOM des personnes autorisées.</p>
+       <input class="finput" type="text" id="f-confier" placeholder="Prénom NOM..."/>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 6 : PAIEMENT ════════════════════════════════════ -->
+  <div class="panel" id="p6">
+    <div class="alert a-info" style="font-size:.78rem">
+      <strong>Modes acceptés :</strong><br>• Espèces<br>• Chèque<br>• 3 fois en chèque<br>• CB via HelloAsso.<br><br>
+      <strong>Encaissement des chèques cotisation :</strong><br>
+      • Annuel : <strong>vers le 05/11/2026</strong><br>
+      • 3 chèques : <strong>vers les 05/11/2026</strong> · <strong>15/01/2027</strong> · <strong>05/04/2027</strong><br><br>
+      <strong>Les cotisations sont dues à l'année et à transmettre en début de saison lors de l'inscription.</strong> (cf règlement intérieur).<br>
+      Pour tout problème lié à l'encaissement merci de nous contacter le plus rapidement possible.<br><br>
+      <strong>‼️ Tout règlement qui ne sera pas à jour entraînera le refus de pratique du judoka.</strong>
+    </div>
+    <div class="fields">
+      <label class="flabel">Validation des modalités de règlement <span class="req">*</span></label>
+      <div class="choices">
+        <label class="choice" id="cb-modalites">
+          <input type="checkbox" id="f-modalites"/>
+          <div class="csq"></div>
+          <div class="ctext">J'ai lu et j'accepte les conditions de règlement</div>
+        </label>
+      </div>
+      <div class="ferr" id="f-modalites-e">Vous devez valider les modalités de règlement</div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 7 : FACTURE ════════════════════════════════════ -->
+  <div class="panel" id="p7">
+    <div class="alert a-info" style="font-size:.79rem">
+      La facture ne pourra être établie qu'après réception de votre règlement en totalité (licence et cotisation).
+      <br>‼️ La facture sera adressée par mail à l'adresse fournie en début de formulaire.
+    </div>
+    <div class="fields">
+      <div class="field">
+        <label class="flabel">Demander une facture <span class="req">*</span></label>
+        <div class="choices" id="attest-g"></div>
+        <div class="ferr" id="attest-e">Veuillez faire un choix</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 8 : RÈGLEMENT INTÉRIEUR ═══════════════════════ -->
+  <div class="panel" id="p8">
+    <div class="alert a-info">
+      Le règlement sera envoyé après l'inscription au format PDF à votre adresse mail. Il est consultable en permanence sur <a href="https://drive.google.com/file/d/1hhBw0s1Jh9KyzzE-hmmJASCELPjbhT3b/view" target="_blank" style="color:var(--navy);font-weight:600">ce lien</a>.
+    </div>
+    <div class="fields">
+      <div class="field">
+        <label class="flabel">Validation du règlement intérieur <span class="req">*</span></label>
+        <div class="choices">
+          <label class="choice" id="cb-reglement">
+            <input type="checkbox" id="f-reglement"/>
+            <div class="csq"></div>
+            <div class="ctext">Je certifie avoir lu et j'accepte les conditions du règlement intérieur</div>
+          </label>
+        </div>
+        <div class="ferr" id="f-reglement-e">Vous devez accepter le règlement intérieur pour continuer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 9 : VALIDATION FINALE ═════════════════════════ -->
+  <div class="panel" id="p9">
+    <div class="alert a-info">
+      Vérifiez vos informations puis envoyez votre dossier.<br>
+      Après envoi, vous pouvez consulter le règlement sur <a href="https://sites.google.com/view/ejt-bruges" target="_blank" style="color:var(--navy);font-weight:600">notre site</a> et faire votre demande de licence sur
+      <a href="https://moncompte.ffjudo.com/prise-licence" target="_blank" style="color:var(--navy);font-weight:600">le site de la fédération</a>.
+    </div>
+    <div class="fields">
+      <div class="field">
+        <label class="flabel">Validation des informations <span class="req">*</span></label>
+        <div class="choices">
+          <label class="choice" id="cb-validation">
+            <input type="checkbox" id="f-validation"/>
+            <div class="csq"></div>
+            <div class="ctext">Je certifie que toutes les informations renseignées dans ce formulaire sont exactes</div>
+          </label>
+        </div>
+        <div class="ferr" id="f-validation-e">Vous devez certifier l'exactitude des informations</div>
+      </div>
+    </div>
+    <div class="err-global" id="err-global"></div>
+  </div>
+
+  <!-- ══ SUCCESS ═══════════════════════════════════════════════ -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">🥋</div>
+    <div class="success-title">Dossier envoyé !</div>
+    <p class="success-msg">
+      Merci pour votre inscription à l'EJT Bruges pour la saison 2026-2027.<br>
+      Vos réponses ont bien été enregistrées.<br><br>
+      En suivant ce lien, dans la partie <em>Information › Documents à télécharger</em>, vous aurez accès au règlement intérieur en PDF et pourrez faire votre demande de licence :
+    </p>
+    <a href="https://sites.google.com/view/ejt-bruges" target="_blank" style="color:var(--navy);font-weight:600;font-size:.9rem">
+      sites.google.com/view/ejt-bruges
+    </a>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-bar" id="nav-bar">
+    <button class="btn btn-s" id="btn-prev" style="display:none" onclick="go(-1)">← Retour</button>
+    <button class="btn btn-p" id="btn-next" onclick="go(1)">
+      <span class="blabel" id="btn-label">Continuer →</span>
+      <div class="spinner"></div>
+    </button>
+  </div>
+
+</div></div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoTpgYh2WQEPJ_m64y47Q9auuU8OIkbkvRKPYZnNvaF50Xzettoc2ADJ25vliWsHaetw/exec";
+
+// ── STEPS META (9 étapes) ────────────────────────────────
+const STEPS = [
+  {icon:"⚠️", title:"Important — À lire avant de commencer", sub:"Section 1 — Informations importantes"},
+  {icon:"👤", title:"Identité & Contact principal",          sub:"Section 2 — Informations personnelles"},
+  {icon:"🏥", title:"Informations médicales",                sub:"Section 3 — Santé"},
+  {icon:"📞", title:"Contacts urgence",                      sub:"Section 4 — Contacts 2 et 3"},
+  {icon:"✅", title:"Autorisations",                          sub:"Section 5 — Droits et autorisations"},
+  {icon:"💳", title:"Paiement",                              sub:"Section 6 — Modalités de règlement"},
+  {icon:"🧾", title:"Facture",                               sub:"Section 7 — Demande de facture"},
+  {icon:"📋", title:"Règlement intérieur",                   sub:"Section 8 — Acceptation"},
+  {icon:"🏁", title:"Validation finale",                     sub:"Section 9 — Confirmation"},
+];
+
+// ── CHOICES ──────────────────────────────────────────────
+const CHX = {
+  cours:  ["JUDO - Mardi et Vendredi - 17h30 à 18h30","JUDO - Mardi et Vendredi - 18h30 à 20h00","JUDO - Mardi et Vendredi - 20h00 à 22h00","BABY JUDO - Mercredi - 17h30 à 18h30","JUJITSU - Mercredi - 19h30 à 21h00","Non Pratiquant"],
+  cert:   ["Attestation suite au questionnaire de santé","Sportif","Sportif de compétition","Non Pratiquant"],
+  attest: ["Oui","Non"],
+  aut3:   ["Oui","Non"],
+  autQ:   ["Oui","Non"],
+};
+
+// ── BUILD RADIOS ─────────────────────────────────────────
+function buildR(gId, opts, name) {
+  document.getElementById(gId).innerHTML = opts.map(o =>
+    `<label class="choice" data-n="${name}" onclick="pickR(this)">
+       <input type="radio" name="${name}" value="${o}"/>
+       <div class="cdot"></div>
+       <div class="ctext">${o}</div>
+     </label>`).join('');
+}
+function pickR(el) {
+  const n = el.dataset.n;
+  document.querySelectorAll(`.choice[data-n="${n}"]`).forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+  ge(n+'-e')?.classList.remove('show');
+}
+function rVal(n) { return document.querySelector(`input[name="${n}"]:checked`)?.value||''; }
+
+// ── CHECKBOXES ───────────────────────────────────────────
+function initCb(lblId,cbId) {
+  const cb = ge(cbId);
+  cb.addEventListener('change',()=>ge(lblId).classList.toggle('selected',cb.checked));
+}
+function cbV(id) { return !!ge(id)?.checked; }
+
+// ── DOM HELPERS ──────────────────────────────────────────
+const ge = id => document.getElementById(id);
+const val = id => ge('f-'+id)?.value?.trim()||'';
+const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const isDate  = v => /^\d{2}\/\d{2}\/\d{4}$/.test(v);
+
+function se(id) { ge('f-'+id)?.classList.add('err'); ge('f-'+id+'-e')?.classList.add('show'); }
+function ce(id) { ge('f-'+id)?.classList.remove('err'); ge('f-'+id)?.classList.add('ok'); ge('f-'+id+'-e')?.classList.remove('show'); }
+
+function chkReq(id)    { if(!val(id))            { se(id); return false; } ce(id); return true; }
+function chkMail(id)   { const v=val(id); if(!v||!isEmail(v)) { se(id); return false; } ce(id); return true; }
+function chkR(n,eid)   { if(!rVal(n)) { ge(eid)?.classList.add('show'); return false; } ge(eid)?.classList.remove('show'); return true; }
+function chkCb(iid,eid){ if(!cbV(iid)) { ge(eid)?.classList.add('show'); return false; } ge(eid)?.classList.remove('show'); return true; }
+
+// ── VALIDATE ─────────────────────────────────────────────
+function validate(s) {
+  let ok = true;
+  const f = () => { ok=false; };
+
+  // p1 : info only, rien à valider
+  if(s===2) {
+    if(!chkReq('nom'))     f();
+    if(!chkReq('prenom'))  f();
+    const dv=val('ddn'); if(!dv||!isDate(dv)){se('ddn');f();}else ce('ddn');
+    if(!chkReq('adresse')) f();
+    if(!chkReq('cp'))      f();
+    if(!chkReq('ville'))   f();
+    if(!chkReq('qualite1'))f();
+    if(!chkReq('tel1'))    f();
+    if(!chkMail('email'))  f();
+    if(!chkR('cours','cours-e')) f();
+  }
+  if(s===3) {
+    if(!chkR('cert','cert-e')) f();
+  }
+  if(s===4) {
+    const m3=val('mail3');
+    if(m3&&!isEmail(m3)) { se('mail3'); f(); }
+    else { ge('f-mail3')?.classList.remove('err'); ge('f-mail3-e')?.classList.remove('show'); }
+  }
+  if(s===5) {
+    if(!chkR('atr','atr-e')) f();
+    if(!chkR('aph','aph-e')) f();
+    if(!chkR('aur','aur-e')) f();
+    if(ge('field-quitter').style.display !== 'none') {
+      if(!chkR('aqu','aqu-e')) f();
+    }
+  }
+  if(s===6) { if(!chkCb('f-modalites','f-modalites-e')) f(); }
+  if(s===7) { if(!chkR('attest','attest-e')) f(); }
+  if(s===8) { if(!chkCb('f-reglement','f-reglement-e')) f(); }
+  if(s===9) { if(!chkCb('f-validation','f-validation-e')) f(); }
+
+  return ok;
+}
+
+// ── NAVIGATION ───────────────────────────────────────────
+let cur = 1;
+const TOT = 9;
+
+function goTo(n) {
+  ge('p'+cur).classList.remove('active');
+  cur = n;
+  ge('p'+cur).classList.add('active');
+  const pct = Math.round(cur/TOT*100);
+  ge('prog-fill').style.width = pct+'%';
+  ge('prog-label').textContent = `Étape ${cur} sur ${TOT}`;
+  ge('prog-pct').textContent   = pct+'%';
+  const s = STEPS[cur-1];
+  if(ge('hd-icon')) ge('hd-icon').textContent = s.icon;
+  ge('hd-title').textContent = s.title;
+  ge('hd-sub').textContent   = s.sub;
+  ge('btn-prev').style.display = cur>1?'':'none';
+  ge('btn-label').textContent  = cur===TOT?'Envoyer le dossier ✓':'Continuer →';
+
+  // Affiche/cache la question quitter selon l'âge (panel 5)
+  if(n===5) {
+    var ddn = val('ddn');
+    var majeur = false;
+    if(ddn && isDate(ddn)) {
+      var parts = ddn.split('/');
+      var naissance = new Date(parts[2], parts[1]-1, parts[0]);
+      var aujourd_hui = new Date();
+      var age = aujourd_hui.getFullYear() - naissance.getFullYear();
+      var moisDiff = aujourd_hui.getMonth() - naissance.getMonth();
+      if(moisDiff < 0 || (moisDiff===0 && aujourd_hui.getDate() < naissance.getDate())) age--;
+      majeur = age >= 18;
+    }
+   var fieldQ = ge('field-quitter');
+  if(majeur) {
+    fieldQ.style.display = 'none';
+    document.querySelectorAll('.choice[data-n="aqu"]').forEach(function(c) {
+      c.classList.remove('selected');
+      if(c.querySelector('input').value === 'Pas Concerné') {
+        c.classList.add('selected');
+        c.querySelector('input').checked = true;
+      }
+    });
+  } else {
+    fieldQ.style.display = '';
+  }
+  var fieldC = ge('field-confier');
+  if(majeur) {
+    fieldC.style.display = 'none';
+    ge('f-confier').value = '';
+  } else {
+    fieldC.style.display = '';
+    ge('f-confier').value = '';
+  }
+}
+
+  ge('err-global')?.classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function go(dir) {
+  if(dir===1) {
+    if(!validate(cur)) return;
+    if(cur===TOT){ await submit(); return; }
+    goTo(cur+1);
+  } else {
+    if(cur>1) goTo(cur-1);
+  }
+}
+
+// ── SUBMIT ───────────────────────────────────────────────
+async function submit() {
+  if(!navigator.onLine){ showGErr('⚡ Connexion internet perdue. Vérifiez votre réseau.'); return; }
+  setLoad(true);
+  const email = val('email');
+  const data = {
+    email,
+    nom:                  val('nom').toUpperCase(),
+    prenom:               val('prenom'),
+    dateNaissance:        val('ddn'),
+    adresse:              val('adresse'),
+    codePostal:           val('cp'),
+    ville:                val('ville'),
+    coursLicencie:        rVal('cours'),
+    certificatMedical:    rVal('cert'),
+    allergies:            val('allergie'),
+    traitementMedical:    val('traitement'),
+    qualite1:             ge('f-qualite1').value,
+    telephone1:           val('tel1'),
+    adresseMail1:         email,
+    qualite2:             ge('f-qualite2').value,
+    telephone2:           val('tel2'),
+    adresseMail2:         val('mail2'),
+    qualite3:             ge('f-qualite3').value,
+    telephone3:           val('tel3'),
+    adresseMail3:         val('mail3'),
+    validationReglement:  cbV('f-reglement') ? 'certifie avoir lu et accepte les conditions du règlement intérieur' : '',
+    validationModalites:  cbV('f-modalites') ? "J'ai lu et j'accepte les conditions de règlement" : '',
+    demanderAttestation:  rVal('attest'),
+    autorisationTransport:rVal('atr'),
+    autorisationPhoto:    rVal('aph'),
+    autorisationUrgence:  rVal('aur'),
+    autorisationQuitter:  rVal('aqu'),
+    autorisationConfier:  val('confier'),
+    validationInfos:      cbV('f-validation') ? 'Je certifie que toutes les informations sont exactes' : '',
+    timestamp:            new Date().toLocaleString('fr-FR'),
+  };
+  try {
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    showSuccess();
+  } catch(e) {
+    console.error(e);
+    setLoad(false);
+    showGErr(navigator.onLine ? '❌ Une erreur est survenue. Veuillez réessayer.' : '⚡ Connexion perdue pendant l\'envoi.');
+  }
+}
+
+function setLoad(on) { ge('btn-next').disabled=on; ge('btn-next').classList.toggle('loading',on); }
+function showGErr(m) { const b=ge('err-global'); b.textContent=m; b.classList.add('show'); }
+function showSuccess() {
+  ge('step-hd').style.display='none';
+  document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+  ge('nav-bar').style.display='none';
+  ge('success-screen').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── INIT ─────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  buildR('cours-g',  CHX.cours,  'cours');
+  buildR('cert-g',   CHX.cert,   'cert');
+  buildR('attest-g', CHX.attest, 'attest');
+  buildR('atr-g',    CHX.aut3,   'atr');
+  buildR('aph-g',    CHX.aut3,   'aph');
+  buildR('aur-g',    CHX.aut3,   'aur');
+  buildR('aqu-g',    CHX.autQ,   'aqu');
+  initCb('cb-modalites',  'f-modalites');
+  initCb('cb-reglement',  'f-reglement');
+  initCb('cb-validation', 'f-validation');
+
+  // Mirror email → champ caché mail1d
+  ge('f-email').addEventListener('input',function(){ ge('f-mail1d').value=this.value; });
+
+  // Auto-format date JJ/MM/AAAA
+  ge('f-ddn').addEventListener('input',function(){
+    let v=this.value.replace(/\D/g,'').slice(0,8);
+    if(v.length>2) v=v.slice(0,2)+'/'+v.slice(2);
+    if(v.length>5) v=v.slice(0,5)+'/'+v.slice(5);
+    this.value=v;
+  });
+
+  // Validation email live
+  ['f-email','f-mail2'].forEach(id=>{
+    ge(id).addEventListener('blur',function(){
+      if(this.value&&!isEmail(this.value)) this.classList.add('err');
+      else if(this.value) this.classList.remove('err');
+    });
+  });
+});
+
+window.addEventListener('offline',()=>ge('offline-bar').classList.add('show'));
+window.addEventListener('online', ()=>ge('offline-bar').classList.remove('show'));
+</script>
+</body>
+</html>
